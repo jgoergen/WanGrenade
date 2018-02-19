@@ -93,8 +93,8 @@ void Settings::load() {
 void Settings::reset() {
   if (debug) Serial.print("reset settings...");
 
-  ssid = "pwned";
-  password = "deauther"; //must have at least 8 characters
+  ssid = "wngrnd";
+  password = "skull12!"; //must have at least 8 characters
   ssidHidden = false;
   apChannel = 1;
 
@@ -109,8 +109,8 @@ void Settings::reset() {
   attackTimeout = 5 * 60;
   attackPacketRate = 10;
   clientScanTime = 15;
-  useLed = true;
-  channelHop = false;
+  useLed = false;
+  channelHop = true;
   multiAPs = false;
   multiAttacks = false;
   macInterval = 4;

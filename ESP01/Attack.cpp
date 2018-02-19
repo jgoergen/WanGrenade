@@ -156,6 +156,17 @@ void Attack::run() {
     if (debug) Serial.print("running " + (String)attackNames[0] + " attack...");
     prevTime[0] = millis();
 
+    Serial.print("<r1:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    Serial.print("<r2:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    Serial.println("<g1:100>");
+    Serial.println("<g2:100>");
+    Serial.println("<b1:0>");
+    Serial.println("<b2:0>");
+
     for (int a = 0; a < apScan.results; a++) {
       if (apScan.isSelected(a)) {
         Mac _ap;
@@ -207,6 +218,18 @@ void Attack::run() {
   int beaconsPerSecond = 10;
   if(settings.beaconInterval) beaconsPerSecond = 1;
   if (isRunning[1] && currentMillis - prevTime[1] >= 1000/beaconsPerSecond) {
+
+    Serial.println("<r1:0>");
+    Serial.println("<r2:0>");
+    Serial.print("<g1:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    Serial.print("<g2:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    Serial.println("<b1:100>");
+    Serial.println("<b2:100>");
+    
     if (debug) Serial.print("running " + (String)attackNames[1] + " attack...");
     prevTime[1] = millis();
 
@@ -232,6 +255,18 @@ void Attack::run() {
 
   /* =============== Probe Request Attack =============== */
   if (isRunning[2] && currentMillis - prevTime[2] >= 1000) {
+
+    Serial.println("<r1:100>");
+    Serial.println("<r2:100>");
+    Serial.println("<g1:0>");
+    Serial.println("<g2:0>");
+    Serial.print("<b1:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    Serial.print("<b2:");
+    Serial.print(random(200) + 50);
+    Serial.println(">");
+    
     if (debug) Serial.print("running " + (String)attackNames[2] + " attack...");
     prevTime[2] = millis();
 
@@ -302,10 +337,11 @@ void Attack::start(int num) {
 void Attack::stop(int num) {
   if(isRunning[num]) {
 
+    Serial.println("<ledspeed:1>");
     Serial.println("<r1:0>");
     Serial.println("<r2:0>");
-    Serial.println("<g1:0>");
-    Serial.println("<g2:0>");
+    Serial.println("<g1:250>");
+    Serial.println("<g2:250>");
     Serial.println("<b1:0>");
     Serial.println("<b2:0>");
 

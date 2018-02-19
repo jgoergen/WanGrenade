@@ -32,7 +32,7 @@ ESP8266WebServer server(80);
 
 /* ========== DEBUG ========== */
 // turn this off, otherwise it will be sending garbage to the attiny!!
-const bool debug = true;
+const bool debug = false;
 /* ========== DEBUG ========== */
 
 // Run-Time Variables //
@@ -45,11 +45,11 @@ bool warning = true;
 
 NameList nameList;
 
-APScan apScan(debug);
-ClientScan clientScan(debug);
-Attack attack(debug);
-Settings settings(debug);
-SSIDList ssidList(debug);
+APScan apScan;
+ClientScan clientScan;
+Attack attack;
+Settings settings;
+SSIDList ssidList;
 
 void sniffer(uint8_t *buf, uint16_t len) {
   clientScan.packetSniffer(buf, len);
@@ -310,12 +310,7 @@ void sendAttackInfo() {
 
 void startAttack() {
 
-  Serial.println("<r1:150>");
-  Serial.println("<r2:150>");
-  Serial.println("<g1:0>");
-  Serial.println("<g2:0>");
-  Serial.println("<b1:0>");
-  Serial.println("<b2:0>");
+  Serial.println("<ledspeed:5>");
   Serial.println("<playa:100>");
   Serial.println("<playg:100>");  
 
@@ -476,13 +471,16 @@ void setup() {
 
   randomSeed(os_random());
   
-#ifdef USE_LED16
-  pinMode(16, OUTPUT);
-  digitalWrite(16, LOW);
-#endif
-  
   Serial.begin(9600);
   delay(2000);
+
+  Serial.println("<r1:0>");
+  Serial.println("<r2:0>");
+  Serial.println("<g1:50>");
+  Serial.println("<g2:50>");
+  Serial.println("<b1:0>");
+  Serial.println("<b2:0>");
+  Serial.println("<playb:10>");
 
   pinMode(2, OUTPUT);
   delay(50);
@@ -496,6 +494,15 @@ void setup() {
 
   settings.load();
   if (debug) settings.info();
+
+  Serial.println("<r1:0>");
+  Serial.println("<r2:0>");
+  Serial.println("<g1:100>");
+  Serial.println("<g2:100>");
+  Serial.println("<b1:0>");
+  Serial.println("<b2:0>");
+  Serial.println("<playc:10>");
+  
   settings.syncMacInterface();
   nameList.load();
   ssidList.load();
@@ -507,6 +514,14 @@ void setup() {
   startWifi();
   attack.stopAll();
   attack.generate();
+
+  Serial.println("<r1:0>");
+  Serial.println("<r2:0>");
+  Serial.println("<g1:150>");
+  Serial.println("<g2:150>");
+  Serial.println("<b1:0>");
+  Serial.println("<b2:0>");
+  Serial.println("<playd:10>");
 
   /* ========== Web Server ========== */
 
@@ -561,6 +576,14 @@ void setup() {
   server.on("/addClient.json",addClient);
   server.on("/enableRandom.json",enableRandom);
 
+  Serial.println("<r1:0>");
+  Serial.println("<r2:0>");
+  Serial.println("<g1:200>");
+  Serial.println("<g2:200>");
+  Serial.println("<b1:0>");
+  Serial.println("<b2:0>");
+  Serial.println("<playe:10>");
+
   server.begin();
 
   if(debug){
@@ -569,12 +592,13 @@ void setup() {
 
   Serial.println("<r1:0>");
   Serial.println("<r2:0>");
-  Serial.println("<g1:100>");
-  Serial.println("<g2:100>");
+  Serial.println("<g1:250>");
+  Serial.println("<g2:250>");
   Serial.println("<b1:0>");
   Serial.println("<b2:0>");
   Serial.println("<playf:100>");
   Serial.println("<playe:100>");  
+  Serial.println("<playa:100>");  
 }
 
 void loop() {

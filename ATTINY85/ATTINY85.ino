@@ -1,11 +1,3 @@
-// WearableSkull - Simple LED and Audio Demo 
-//   Hardware from HackerBox 0025
-//     www.HackerBoxes.com
-//
-// LED code adapted from "strandtest" NeoPixel Example
-// Audio code adapted from Arduino.cc tutorials for Melody and PlayMelody
-//
-
 #include <Adafruit_NeoPixel.h>
 #include <avr/power.h>
 #include <SoftwareSerial.h>
@@ -68,7 +60,7 @@ void loop() {
   }
 
   updateLeds();
-  delay(33);
+  delay(10);
 }
 
 void processCommand(char* command, char* param) {
@@ -142,25 +134,77 @@ void readSerial() {
 
 void updateLeds() {
 
-  // slide values towards targets
+  // slide values towards targets, unless the distance is less then the 'slide distance' in which case, just set them to the value to prevent banding.
+
+  if (abs(r1 - ar1) < ledChangeSpeed) {
+
+    ar1 = r1;
+    
+  } else {
+
+    if (r1 < ar1) 
+      ar1 -= ledChangeSpeed; 
+    else if (r1 > ar1) 
+      ar1 += ledChangeSpeed;
+  }
+
+  if (abs(g1 - ag1) < ledChangeSpeed) {
+
+    ag1 = g1;
+    
+  } else {
+
+    if (g1 < ag1) 
+      ag1 -= ledChangeSpeed; 
+    else if (g1 > ag1) 
+      ag1 += ledChangeSpeed;
+  }
+
+  if (abs(b1 - ab1) < ledChangeSpeed) {
+
+    ab1 = b1;
+    
+  } else {
+
+    if (b1 < ab1) 
+      ab1 -= ledChangeSpeed; 
+    else if (b1 > ab1) 
+      ab1 += ledChangeSpeed;
+  }
   
-  if (r1 < ar1) ar1 -= ledChangeSpeed; 
-  else if (r1 > ar1) ar1 += ledChangeSpeed;
-  
-  if (g1 < ag1) ag1 -= ledChangeSpeed; 
-  else if (g1 > ag1) ag1 += ledChangeSpeed;
-  
-  if (b1 < ab1) ab1 -= ledChangeSpeed; 
-  else if (b1 > ab1) ab1 += ledChangeSpeed;
-  
-  if (r2 < ar2) ar2 -= ledChangeSpeed; 
-  else if (r2 > ar2) ar2 += ledChangeSpeed;
-  
-  if (g2 < ag2) ag2 -= ledChangeSpeed; 
-  else if (g2 > ag2) ag2 += ledChangeSpeed;
-  
-  if (b2 < ab2) ab2 -= ledChangeSpeed; 
-  else if (b2 > ab2) ab2 += ledChangeSpeed;
+  if (abs(r2 - ar2) < ledChangeSpeed) {
+
+    ar2 = r2;
+    
+  } else {
+    
+    if (r2 < ar2) ar2 -= ledChangeSpeed; 
+    else if (r2 > ar2) ar2 += ledChangeSpeed;
+  }
+
+  if (abs(g2 - ag2) < ledChangeSpeed) {
+
+    ag2 = g2;
+    
+  } else {
+    
+    if (g2 < ag2) 
+      ag2 -= ledChangeSpeed; 
+    else if (g2 > ag2) 
+      ag2 += ledChangeSpeed;
+  }
+
+  if (abs(b2 - ab2) < ledChangeSpeed) {
+
+    ab2 = b2;
+    
+  } else {
+
+    if (b2 < ab2) 
+      ab2 -= ledChangeSpeed; 
+    else if (b2 > ab2) 
+      ab2 += ledChangeSpeed;
+  }
   
   // apply actual rgb values. 
   // ( NOTE: leds are reversed, hence the led indexs being reversed )
