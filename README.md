@@ -1,7 +1,5 @@
 # WanGrenade
 
-ESP01 Code based on this project: http://www.instructables.com/id/WiFi-Jammer-Using-ESP8266/
+A new take on the [ESP8266 Deauther project](https://github.com/spacehuhn/esp8266_deauther) by [spacehuhn](https://github.com/spacehuhn) using a skull badge from Hackerbox #25 from [Hackerboxes](https://hackerboxes.com/).
 
-read on this, can we include the hacked headers ourselves?
-
-change this to remember the last ap / client and autostart attacking them after start. That way you can set it up, and turn it off / on anytime and it'll start again.
+There is a video demonstrating the build and the device working available [here](https://www.youtube.com/watch?v=CWNTwVjwA_M)

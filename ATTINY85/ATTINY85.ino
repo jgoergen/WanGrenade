@@ -1,14 +1,18 @@
+// Some of this code is from the original badge code provided by Hackerboxes
+// http://www.instructables.com/id/HackerBox-0025-Flair-Ware/ 
+
 #include <Adafruit_NeoPixel.h>
 #include <avr/power.h>
 #include <SoftwareSerial.h>
 
-#define speakerPin  4
-#define pixelPin    3
-#define txPin       0
-#define rxPin       1
+#define SPEAKER_PIN     4
+#define NEOPIXEL_PIN    3
+#define SERIAL_TX_PIN   0
+#define SERIAL_RX_PIN   1
 
 const char COMMAND_BEGIN_CHAR = '<';
 const char COMMAND_END_CHAR = '>';
+const char COMMAND_DIVIDER_CHAR = ":";
 const byte COMMAND_LENGTH = 32;
 
 char receivedChars[COMMAND_LENGTH];
@@ -32,15 +36,29 @@ int ar2 = 0;
 int ag2 = 0;
 int ab2 = 0;
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, pixelPin, NEO_GRB + NEO_KHZ800);
-SoftwareSerial Serial(rxPin, txPin);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(2, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+SoftwareSerial Serial(SERIAL_RX_PIN, SERIAL_TX_PIN);
 
 void setup() {
   
+  // start serial communications
+
   Serial.begin(9600);
+  
+  // notify device on the other end this device is ready
+
   Serial.println("Init");
+  
+  // start neopixels
+
   strip.begin();
-  pinMode(speakerPin, OUTPUT);
+  
+  // setup buzzer
+
+  pinMode(SPEAKER_PIN, OUTPUT);
+  
+  // play sound denoting boot completion
+
   playNote('c', 40);
   playNote('e', 80);
   playNote('g', 120);
@@ -48,14 +66,18 @@ void setup() {
 
 void loop() {
   
+  // get data out of the serial buffer
+
   readSerial();
   
+  // do we have any new data to parse?
+
   if (receivedNewData[0] != 0 && receivedNewData[1] != 0 && receivedNewData[2] != 0) {
   
-    // seperate the command from the parameter 
+    // seperate the command from the parameter and process it
     
-    char* command = strtok(receivedNewData, ":");
-    char* param = strtok(NULL, ":");
+    char* command = strtok(receivedNewData, COMMAND_DIVIDER_CHAR);
+    char* param = strtok(NULL, COMMAND_DIVIDER_CHAR);
     processCommand(command, param);
   }
 
@@ -65,24 +87,24 @@ void loop() {
 
 void processCommand(char* command, char* param) {
 
+  // commands should be in the format "<COMMAND:PARAMER>"
+
   if (strcmp(command, "r1") == 0)             r1 = atoi(param);
   else if (strcmp(command, "g1") == 0)        g1 = atoi(param);
   else if (strcmp(command, "b1") == 0)        b1 = atoi(param);
   else if (strcmp(command, "r2") == 0)        r2 = atoi(param);
   else if (strcmp(command, "g2") == 0)        g2 = atoi(param);
   else if (strcmp(command, "b2") == 0)        b2 = atoi(param);
-  else if (strcmp(command, "playc") == 0)     playNote('c', atoi(param));
-  else if (strcmp(command, "playd") == 0)     playNote('d', atoi(param));
-  else if (strcmp(command, "playe") == 0)     playNote('e', atoi(param));
-  else if (strcmp(command, "playf") == 0)     playNote('f', atoi(param));
-  else if (strcmp(command, "playg") == 0)     playNote('g', atoi(param));
-  else if (strcmp(command, "playa") == 0)     playNote('a', atoi(param));
-  else if (strcmp(command, "playb") == 0)     playNote('b', atoi(param));
-  else if (strcmp(command, "playc") == 0)     playNote('c', atoi(param));
+  else if (strcmp(command, "playc") == 0)     playNote("c", atoi(param));
+  else if (strcmp(command, "playd") == 0)     playNote("d", atoi(param));
+  else if (strcmp(command, "playe") == 0)     playNote("e", atoi(param));
+  else if (strcmp(command, "playf") == 0)     playNote("f", atoi(param));
+  else if (strcmp(command, "playg") == 0)     playNote("g", atoi(param));
+  else if (strcmp(command, "playa") == 0)     playNote("a", atoi(param));
+  else if (strcmp(command, "playb") == 0)     playNote("b", atoi(param));
+  else if (strcmp(command, "playc") == 0)     playNote("c", atoi(param));
   else if (strcmp(command, "ledspeed") == 0)  ledChangeSpeed = atof(param);  
 }
-
-// commands should be in the format "<COMMAND:PARAMER>"
 
 void readSerial() {
   
@@ -105,7 +127,7 @@ void readSerial() {
                 ndx = COMMAND_LENGTH - 1;
         } else {
           
-            receivedChars[ndx] = '\0'; // terminate the string
+            receivedChars[ndx] = "\0"; // terminate the string
             recvInProgress = false;
             ndx = 0;
             newData = true;
@@ -134,7 +156,8 @@ void readSerial() {
 
 void updateLeds() {
 
-  // slide values towards targets, unless the distance is less then the 'slide distance' in which case, just set them to the value to prevent banding.
+  // slide values towards targets, unless the distance is less then the 'slide distance' in which case, 
+  // just set them to the value to prevent rubber-banding.
 
   if (abs(r1 - ar1) < ledChangeSpeed) {
 
@@ -218,9 +241,9 @@ void playTone(int tone, int duration) {
   
   for (long i = 0; i < duration * 1000L; i += tone * 2) {
     
-    digitalWrite(speakerPin, HIGH);
+    digitalWrite(SPEAKER_PIN, HIGH);
     delayMicroseconds(tone);
-    digitalWrite(speakerPin, LOW);
+    digitalWrite(SPEAKER_PIN, LOW);
     delayMicroseconds(tone);
   }
 }
